@@ -1,5 +1,4 @@
-function calcMean(str) {
-    const nums = str.split(",").map(Number);
+function calcMean(nums) {
     const total = nums.reduce((a, c) => a + c, 0);
 
     let mean = total / nums.length;
@@ -7,20 +6,15 @@ function calcMean(str) {
     return mean;
 }
 
-function calcMedian(str) {
-    const nums = str
-        .split(",")
-        .map(Number)
-        .sort((a, b) => a - b);
+function calcMedian(nums) {
+    nums.sort((a, b) => a - b);
 
     let mid = Math.floor(nums.length / 2);
 
     return nums.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
 }
 
-function calcMode(str) {
-    const nums = str.split(",").map(Number);
-
+function calcMode(nums) {
     const obj = (result = nums.reduce((obj, c) => {
         obj[c] = ++obj[c] || 1;
         return obj;
