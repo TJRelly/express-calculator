@@ -1,7 +1,7 @@
 function calcMean(nums) {
     const total = nums.reduce((a, c) => a + c, 0);
 
-    let mean = total / nums.length;
+    !nums.length ? (mean = 0) : (mean = total / nums.length);
 
     return mean;
 }
@@ -20,7 +20,7 @@ function calcMode(nums) {
         return obj;
     }, {}));
 
-    return findHighest(obj);
+    return +findHighest(obj);
 }
 
 const findHighest = (numsObj) => {

@@ -1,5 +1,5 @@
 const express = require("express");
-const { calcMean, calcMedian, calcMode } = require("./operations");
+const { calcMean, calcMedian, calcMode } = require("./helpers");
 const ExpressError = require("./expressError");
 
 const app = express();
@@ -7,94 +7,97 @@ const app = express();
 app.use(express.json());
 
 app.get("/", function (req, res) {
-  res.redirect("/");
+    res.redirect("/");
 });
 
 app.get("/mean", (req, res, next) => {
-  try {
-    if (!req.query.nums)
-      throw new ExpressError("There are no numbers to calculate", 400);
+    try {
+        if (!req.query.nums)
+            throw new ExpressError(
+                "You must pass a query key of nums with a comma-separated list of numbers.",
+                400
+            );
 
-    let nums = req.query.nums.split(",").map(Number);
+        let nums = req.query.nums.split(",").map(Number);
 
-    if (!nums.every(Number)) {
-      throw new ExpressError("Must only enter numbers", 400);
-    } else if (!nums) throw new ExpressError("Nums cannot be empty", 400);
+        if (!nums.every(Number)) {
+            throw new ExpressError("Must only enter numbers", 400);
+        } else if (!nums) throw new ExpressError("Nums cannot be empty", 400);
 
-    let mean = calcMean(nums);
-
-    return res.json({
-      operation: "mean",
-      value: mean,
-    });
-  } catch (err) {
-    next(err);
-  }
+        return res.json({
+            operation: "mean",
+            value: calcMean(nums),
+        });
+    } catch (err) {
+        next(err);
+    }
 });
 
 app.get("/median", (req, res, next) => {
-  try {
-    if (!req.query.nums)
-      throw new ExpressError("There are no numbers to calculate", 400);
+    try {
+        if (!req.query.nums)
+            throw new ExpressError(
+                "You must pass a query key of nums with a comma-separated list of numbers.",
+                400
+            );
 
-    let nums = req.query.nums.split(",").map(Number);
-    let median = calcMedian(nums);
+        let nums = req.query.nums.split(",").map(Number);
 
-    if (!nums.every(Number)) {
-      console.log();
-      throw new ExpressError("Must only enter numbers", 400);
+        if (!nums.every(Number)) {
+            throw new ExpressError("You must only enter numbers", 400);
+        }
+
+        res.json({
+            operation: "median",
+            value: calcMedian(nums),
+        });
+    } catch (e) {
+        next(e);
     }
-
-    res.json({
-      operation: "median",
-      value: median,
-    });
-  } catch (e) {
-    next(e);
-  }
 });
 
 app.get("/mode", (req, res, next) => {
-  try {
-    if (!req.query.nums)
-      throw new ExpressError("There are no numbers to calculate", 400);
+    try {
+        if (!req.query.nums)
+            throw new ExpressError(
+                "You must pass a query key of nums with a comma-separated list of numbers.",
+                400
+            );
 
-    let nums = req.query.nums.split(",").map(Number);
-    let mode = calcMode(nums);
+        let nums = req.query.nums.split(",").map(Number);
 
-    if (!nums.every(Number)) {
-      console.log();
-      throw new ExpressError("Must only enter numbers", 400);
+        if (!nums.every(Number)) {
+            throw new ExpressError("Must only enter numbers", 400);
+        }
+
+        res.json({
+            operation: "mode",
+            value: calcMode(nums),
+        });
+    } catch (e) {
+        next(e);
     }
-
-    res.json({
-      operation: "mode",
-      value: mode,
-    });
-  } catch (e) {
-    next(e);
-  }
 });
 
 // If no other route matches, respond with a 404
 app.use((req, res, next) => {
-  const e = new ExpressError("Page Not Found", 404);
-  next(e);
+    const e = new ExpressError("Page Not Found", 404);
+    next(e);
 });
 
 // Error handler
 app.use(function (err, req, res, next) {
-  //Note the 4 parameters!
-  // the default status is 500 Internal Server Error
-  let status = err.status || 500;
-  let message = err.msg;
+    //Note the 4 parameters!
+    // the default status is 500 Internal Server Error
+    let status = err.status || 500;
+    let message = err.msg;
 
-  // set the status and alert the user
-  return res.status(status).json({
-    error: { message, status },
-  });
+    // set the status and alert the user
+    return res.status(status).json({
+        error: { message, status },
+    });
 });
 
 app.listen(3000, function () {
-  console.log("App on port 3000");
+    console.log("App on port 3000");
 });
